@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Forge — AI Product Design Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/src/css/main.css"/>
+</head>
+<body>
+
+<!-- ── LOADING SCREEN ─────────────────────────────────────────────────────── -->
+<div id="forge-loading">
+  <div class="loading-logo">
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+      <polygon points="24,4 44,38 4,38" stroke="#2563eb" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+      <line x1="24" y1="4" x2="24" y2="38" stroke="#2563eb" stroke-width="1" opacity="0.4"/>
+      <line x1="4" y1="38" x2="44" y2="38" stroke="#2563eb" stroke-width="1" opacity="0.4"/>
+    </svg>
+    <span>FORGE</span>
+  </div>
+  <div class="loading-bar"><div id="loading-fill"></div></div>
+  <div class="loading-msg" id="loading-msg">Initialising...</div>
+</div>
+
+<!-- ── MAIN APP ──────────────────────────────────────────────────────────── -->
+<div id="forge-app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+        <polygon points="24,4 44,38 4,38" stroke="#2563eb" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+      </svg>
+      <span>FORGE</span>
+    </div>
+
+    <div class="sidebar-section-label">Projects</div>
+    <button class="sidebar-new-btn" onclick="forge.wizard.open()">+ New Project</button>
+    <div id="projects-list" class="projects-list">
+      <div class="projects-empty">No projects yet</div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-section-label">Account</div>
+      <div id="user-display" class="user-display">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name">Guest</div>
+          <div class="user-plan">Free Plan</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
+
+    <!-- TOPBAR -->
+    <div id="topbar">
+      <div id="topbar-title">Welcome to Forge</div>
+      <div id="topbar-actions"></div>
+    </div>
+
+    <!-- PAGES -->
+    <div id="page-home" class="page active">
+      <div class="home-hero">
+        <div class="home-hero-icon">
+          <svg width="64" height="64" viewBox="0 0 48 48" fill="none">
+            <polygon points="24,4 44,38 4,38" stroke="#2563eb" stroke-width="2" fill="rgba(37,99,235,0.08)" stroke-linejoin="round"/>
+            <line x1="24" y1="16" x2="24" y2="30" stroke="#2563eb" stroke-width="1.5" opacity="0.6"/>
+          </svg>
+        </div>
+        <h1>Design anything.<br/>Build everything.</h1>
+        <p>Describe your product idea and Forge will generate concept renders, find real components from global suppliers, create engineering drawings, and package everything a manufacturer needs.</p>
+        <button class="btn-primary-lg" onclick="forge.wizard.open()">Start a New Design →</button>
+        <div class="home-features">
+          <div class="home-feature">
+            <div class="feature-icon">🎨</div>
+            <div class="feature-label">AI Concept Renders</div>
+          </div>
+          <div class="home-feature">
+            <div class="feature-icon">🔍</div>
+            <div class="feature-label">Real Parts Search</div>
+          </div>
+          <div class="home-feature">
+            <div class="feature-icon">📐</div>
+            <div class="feature-label">Engineering Drawings</div>
+          </div>
+          <div class="home-feature">
+            <div class="feature-icon">📦</div>
+            <div class="feature-label">Manufacturing Package</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT WORKSPACE -->
+    <div id="page-project" class="page" style="display:none">
+      <!-- Tab bar -->
+      <div id="project-tabs">
+        <button class="proj-tab active" data-tab="brief">📋 Brief</button>
+        <button class="proj-tab" data-tab="visuals">🎨 Visuals</button>
+        <button class="proj-tab" data-tab="parts">🔍 Parts</button>
+        <button class="proj-tab" data-tab="drawings">📐 Drawings</button>
+        <button class="proj-tab" data-tab="electronics">⚡ Electronics</button>
+        <button class="proj-tab" data-tab="preview">🔮 3D Preview</button>
+        <button class="proj-tab" data-tab="package">📦 Package</button>
+      </div>
+
+      <!-- Tab content -->
+      <div id="tab-brief"       class="tab-content active"></div>
+      <div id="tab-visuals"     class="tab-content"></div>
+      <div id="tab-parts"       class="tab-content"></div>
+      <div id="tab-drawings"    class="tab-content"></div>
+      <div id="tab-electronics" class="tab-content"></div>
+      <div id="tab-preview"     class="tab-content"></div>
+      <div id="tab-package"     class="tab-content"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── WIZARD MODAL ───────────────────────────────────────────────────────── -->
+<div id="wizard-overlay" class="overlay" style="display:none">
+  <div id="wizard-modal" class="modal-lg">
+    <div class="wizard-header">
+      <div class="wizard-logo">
+        <svg width="20" height="20" viewBox="0 0 48 48" fill="none">
+          <polygon points="24,4 44,38 4,38" stroke="#2563eb" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+        </svg>
+        New Project
+      </div>
+      <button class="modal-close" onclick="forge.wizard.close()">✕</button>
+    </div>
+
+    <!-- Step indicator -->
+    <div id="wizard-steps" class="wizard-steps">
+      <div class="wstep active" data-step="1"><div class="wstep-num">1</div><div class="wstep-label">Describe</div></div>
+      <div class="wstep-line"></div>
+      <div class="wstep" data-step="2"><div class="wstep-num">2</div><div class="wstep-label">References</div></div>
+      <div class="wstep-line"></div>
+      <div class="wstep" data-step="3"><div class="wstep-num">3</div><div class="wstep-label">Constraints</div></div>
+      <div class="wstep-line"></div>
+      <div class="wstep" data-step="4"><div class="wstep-num">4</div><div class="wstep-label">Parts</div></div>
+      <div class="wstep-line"></div>
+      <div class="wstep" data-step="5"><div class="wstep-num">5</div><div class="wstep-label">Generate</div></div>
+    </div>
+
+    <!-- Step content -->
+    <div id="wizard-content" class="wizard-content"></div>
+
+    <!-- Footer -->
+    <div class="wizard-footer">
+      <button id="wizard-back" class="btn-ghost" onclick="forge.wizard.back()" style="display:none">← Back</button>
+      <div style="flex:1"></div>
+      <button id="wizard-next" class="btn-primary" onclick="forge.wizard.next()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ─────────────────────────────────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<script type="module" src="/src/js/main.js"></script>
+</body>
+</html>
