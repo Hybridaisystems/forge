@@ -55,7 +55,13 @@ export async function forgeParts(requirements, category) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ requirements, category })
   });
-  const data = await resp.json();
+  if(resp.status === 504 || resp.status === 502) {
+    throw new Error('Parts search timed out — the supplier search took too long. Try narrower requirements.');
+  }
+  const raw = await resp.text();
+  let data;
+  try { data = JSON.parse(raw); }
+  catch { throw new Error(raw || `Parts search returned ${resp.status}`); }
   return data.parts || [];
 }
 
