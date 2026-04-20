@@ -6,6 +6,12 @@
 [build.environment]
   NODE_VERSION = "18"
 
+[functions."anthropic-proxy"]
+  timeout = 26
+
+[functions."image-proxy"]
+  timeout = 26
+
 [[headers]]
   for = "/*"
   [headers.values]

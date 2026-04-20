@@ -61,8 +61,8 @@ export async function generate() {
     const c = project.constraints || {};
 
     const data = await forgeAI({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 3000,
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2000,
       messages: [{
         role: 'user',
         content: `You are an engineering drafter. Generate dimensioned drawing specifications for this product.\n\n` +

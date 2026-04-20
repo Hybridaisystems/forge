@@ -490,7 +490,7 @@ async function generateDesignBrief(data) {
     `Return ONLY JSON:\n` +
     `{"product_name":"string","icon":"emoji","tagline":"one line","product_type":"mechanical|electronic|electromechanical|software|other","overview":"paragraph","key_features":["list"],"technical_requirements":["list"],"materials_suggested":["list"],"challenges":["potential design challenges"],"render_description":"detailed visual description for image generation (materials, form, environment, lighting)"}`;
 
-  const data2 = await forgeAI({ model: 'claude-sonnet-4-6', max_tokens: 1500, messages: [{ role:'user', content: prompt }] });
+  const data2 = await forgeAI({ model: 'claude-haiku-4-5-20251001', max_tokens: 900, messages: [{ role:'user', content: prompt }] });
   return extractJSON(extractText(data2)) || { product_name: data.description.slice(0, 40), icon: '⚙️' };
 }
 

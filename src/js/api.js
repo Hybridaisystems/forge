@@ -18,10 +18,18 @@ export async function forgeAI(body, maxRetries = 4) {
         delay = Math.min(delay * 1.5, 60000);
         continue;
       }
-      const data = await resp.json();
-      if(data.error) throw new Error(data.error.message || 'API error');
+      if(resp.status === 504 || resp.status === 502) {
+        throw new Error('Generation timed out — the model took too long to respond. Try a shorter description or simpler constraints.');
+      }
+      const raw = await resp.text();
+      let data;
+      try { data = JSON.parse(raw); }
+      catch { throw new Error(raw || `Proxy returned ${resp.status}`); }
+      if(data.error) throw new Error(data.error.message || data.error || 'API error');
       return data;
     } catch(e) {
+      const msg = e && e.message ? e.message : String(e);
+      if(msg.includes('timed out')) throw e;
       if(attempt === maxRetries - 1) throw e;
       await sleep(delay);
       delay = Math.min(delay * 1.5, 60000);
