@@ -8,7 +8,7 @@ Forge is a standalone web app that takes a user from product idea to manufacturi
 - **3D Preview:** Three.js (CDN)
 - **Canvas annotations:** Fabric.js (CDN)
 - **SVG drawings:** Generated programmatically with vanilla JS
-- **AI:** Claude Sonnet via /.netlify/functions/anthropic-proxy (POST)
+- **AI:** Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) via /.netlify/functions/anthropic-proxy (POST). Haiku is the default because Netlify sync functions cap at 10s (free) / 26s (Pro) and Sonnet 4.6 reliably 504s on briefs/drawings. Use Sonnet only via a Background Function (see below).
 - **Images:** DALL-E 3 via /.netlify/functions/image-proxy (POST)
 - **Parts search:** /.netlify/functions/parts-search (POST)
 - **Storage:** Supabase (projects, versions, parts, uploads)
@@ -18,9 +18,10 @@ Forge is a standalone web app that takes a user from product idea to manufacturi
 - ALL API keys live in Netlify env vars — NEVER in frontend code
 - ALL Anthropic calls go through /.netlify/functions/anthropic-proxy
 - ALL image generation goes through /.netlify/functions/image-proxy
-- Use window.forgeAPI() wrapper for all API calls with retry on 429
+- Use window.forgeAPI() wrapper for all API calls with retry on 429 (504/502 fail fast)
 - Every module registers functions on window.forge namespace
 - State lives in window._forgeState — single source of truth
+- Default model: Haiku 4.5 with `max_tokens` ≤ 2000. Anything larger or slower (long briefs, Sonnet-quality work) must go through a Background Function (`*-background.js`, 15-min limit) with client-side polling — not the sync proxy.
 
 ## Project Structure
 ```
