@@ -1,5 +1,6 @@
 // ── FORGE — Main Entry Point ──────────────────────────────────────────────────
 import './ui.js'
+import './supabase.js'
 import { wizard }    from './wizard.js'
 import { projects }  from './projects.js'
 import { visuals }   from './visuals.js'

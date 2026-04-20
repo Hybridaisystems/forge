@@ -10,7 +10,7 @@ Forge is a standalone web app that takes a user from product idea to manufacturi
 - **SVG drawings:** Generated programmatically with vanilla JS
 - **AI:** Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) via /.netlify/functions/anthropic-proxy (POST). Haiku is the default because Netlify sync functions cap at 10s (free) / 26s (Pro) and Sonnet 4.6 reliably 504s on briefs/drawings. Use Sonnet only via a Background Function (see below).
 - **Images:** DALL-E 3 via /.netlify/functions/image-proxy (POST)
-- **Parts search:** /.netlify/functions/parts-search (POST)
+- **Parts search:** /.netlify/functions/parts-search-background (POST) — Background Function (up to 15 min). Client inserts a row in `parts_search_jobs`, POSTs the job_id to the function, then polls the row. Uses Sonnet + `web_search`.
 - **Storage:** Supabase (projects, versions, parts, uploads)
 - **Deploy:** Netlify (GitHub → auto deploy)
 
@@ -33,19 +33,19 @@ Forge is a standalone web app that takes a user from product idea to manufacturi
   brief.js         — design brief module
   visuals.js       — concept render + canvas annotations
   parts.js         — parts search + BOM management
+  supabase.js      — tiny fetch-based Supabase REST client (insert/select)
   drawings.js      — 2D engineering drawing generator
   electronics.js   — PCB/schematic module
   preview3d.js     — Three.js 3D preview
   package.js       — manufacturing package builder
   projects.js      — project CRUD + versioning
-  supabase.js      — Supabase client
   ui.js            — nav, modals, toasts, routing
 /src/css/
   main.css         — all styles
 /netlify/functions/
-  anthropic-proxy.js
-  image-proxy.js
-  parts-search.js
+  anthropic-proxy.js            — sync Claude calls (Haiku, ≤10s free / ≤26s Pro)
+  image-proxy.js                — DALL-E image generation
+  parts-search-background.js    — Sonnet + web_search via Background Function (15-min limit)
 index.html
 ```
 
@@ -63,6 +63,7 @@ project_versions (id, project_id, version, brief, renders, parts, drawings, note
 parts_library (id, project_id, name, part_number, supplier, price_single, price_100, price_1000, specs, datasheet_url, status)
 uploads (id, project_id, type, filename, url, parsed_content)
 annotations (id, project_id, version_id, image_url, x, y, w, h, note, resolved)
+parts_search_jobs (id, status, requirements, category, result, error, created_at, completed_at)
 ```
 
 ## Env Vars needed in Netlify

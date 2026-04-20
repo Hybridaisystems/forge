@@ -12,9 +12,6 @@
 [functions."image-proxy"]
   timeout = 26
 
-[functions."parts-search"]
-  timeout = 26
-
 [[headers]]
   for = "/*"
   [headers.values]
